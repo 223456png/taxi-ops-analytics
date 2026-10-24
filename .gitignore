@@ -1,0 +1,29 @@
+# 数据文件 571MB，不进仓库
+# 下载方式见 README
+data/*.parquet
+data/*.csv
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# 系统
+.DS_Store
+Thumbs.db
+
+# BI 事实表：171MB，由 src/01_etl.py 生成，不进仓库
+# 维表 CSV 很小（合计约 15KB），随仓库提供
+powerbi/exports/*.parquet
+
+# Power BI 打开时自动生成的文件
+powerbi/.pbi/
+powerbi/*.pbix
+powerbi/TaxiOps.Report/.pbi/
+
+# Power BI 本地设置（含本机签名，不该共享）
+powerbi/**/.pbi/
+powerbi/*.pbix
+
+# 我手动备份的旧版本
+powerbi/**/*.mine

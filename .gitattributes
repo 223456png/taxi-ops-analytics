@@ -1,0 +1,15 @@
+# Power BI 项目文件必须保持 LF：TMDL 解析器对 CRLF 不友好
+*.pbip   text eol=lf
+*.pbir   text eol=lf
+*.pbism  text eol=lf
+*.bim    text eol=lf
+*.tmdl   text eol=lf
+.platform text eol=lf
+powerbi/**/*.json text eol=lf
+
+# CSV 保持原样，让 Excel/Power BI 自己处理
+*.csv    -text
+
+# 图片二进制
+*.png    binary
+*.parquet binary

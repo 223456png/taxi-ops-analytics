@@ -1,0 +1,8 @@
+# 本项目在以下环境验证通过：
+#   Python 3.12.10 + duckdb 2.0.0 + pandas 3.0.6 + numpy 2.5.2 + matplotlib 3.11.2
+# 也兼容 duckdb 1.x / pandas 2.x
+
+duckdb>=1.0          # 读 parquet、跑 SQL、做窗口计算
+pandas>=2.0          # ETL 和数据整理
+numpy>=1.24          # 数值计算
+matplotlib>=3.7      # 出图（需要中文字体：Windows 自带微软雅黑即可）

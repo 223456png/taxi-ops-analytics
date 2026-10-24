@@ -1,0 +1,87 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 0,
+        "y": 0
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 624.76964992462911,
+            "y": 295.30892662059534
+          },
+          "nodeIndex": "dim_date",
+          "nodeLineageTag": "3fd782e9-d700-4471-ae26-fc52dd1b903b",
+          "size": {
+            "height": 248,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 50,
+            "y": 129.95423551426961
+          },
+          "nodeIndex": "dim_payment",
+          "nodeLineageTag": "0f1fc96c-e445-4d10-b664-ab079a0d1c0f",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 311.56299498209205,
+            "y": -50
+          },
+          "nodeIndex": "dim_rate",
+          "nodeLineageTag": "ab76e36b-ac8a-450e-9049-45c6708b4f48",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 272.02385522271783,
+            "y": 483.5804495003548
+          },
+          "nodeIndex": "dim_zone",
+          "nodeLineageTag": "8bc5b30d-7307-4cf8-b4f3-2e7efea2421c",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 338.58601778619288,
+            "y": 130.4896181482801
+          },
+          "nodeIndex": "fact_trips",
+          "nodeLineageTag": "9ae6326e-820e-45f6-bb96-98892176bbe0",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
+      "name": "所有表",
+      "zoomValue": 100,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "所有表",
+  "defaultDiagram": "所有表"
+}
