@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "TaxiOps"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "e4db87a8-d24e-573b-8e1c-7fda9b9e9d9e"
+  }
+}

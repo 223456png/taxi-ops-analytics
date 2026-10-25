@@ -1,0 +1,8 @@
+# 已在 Python 3.13 + duckdb 2.0 + pandas 3.1 + matplotlib 3.11 下跑通
+# 兼容 Python 3.10+ / duckdb 1.x / pandas 2.x
+
+duckdb>=1.0          # 读 parquet、跑 SQL、做窗口计算
+pandas>=2.0          # ETL 和数据整理
+numpy>=1.24          # 数值计算
+matplotlib>=3.7      # 出图（需要中文字体：Windows 自带微软雅黑即可）
+scipy>=1.10          # 实验功效与显著性检验

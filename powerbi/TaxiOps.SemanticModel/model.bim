@@ -1,0 +1,504 @@
+{
+  "name": "TaxiOps",
+  "compatibilityLevel": 1604,
+  "model": {
+    "culture": "zh-CN",
+    "defaultPowerBIDataSourceVersion": "powerBI_V3",
+    "tables": [
+      {
+        "name": "fact_trips",
+        "columns": [
+          {
+            "name": "trip_id",
+            "dataType": "int64",
+            "sourceColumn": "trip_id",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "date_key",
+            "dataType": "dateTime",
+            "sourceColumn": "date_key",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "hour_of_day",
+            "dataType": "int64",
+            "sourceColumn": "hour_of_day",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "pickup_ts",
+            "dataType": "dateTime",
+            "sourceColumn": "pickup_ts",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "dropoff_ts",
+            "dataType": "dateTime",
+            "sourceColumn": "dropoff_ts",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "pu_zone_id",
+            "dataType": "int64",
+            "sourceColumn": "pu_zone_id",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "do_zone_id",
+            "dataType": "int64",
+            "sourceColumn": "do_zone_id",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "payment_id",
+            "dataType": "int64",
+            "sourceColumn": "payment_id",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "rate_id",
+            "dataType": "int64",
+            "sourceColumn": "rate_id",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "distance_mi",
+            "dataType": "double",
+            "sourceColumn": "distance_mi",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "duration_min",
+            "dataType": "int64",
+            "sourceColumn": "duration_min",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "speed_mph",
+            "dataType": "double",
+            "sourceColumn": "speed_mph",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "pax",
+            "dataType": "int64",
+            "sourceColumn": "pax",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "fare_amount",
+            "dataType": "double",
+            "sourceColumn": "fare_amount",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "tip_amount",
+            "dataType": "double",
+            "sourceColumn": "tip_amount",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "tolls_amount",
+            "dataType": "double",
+            "sourceColumn": "tolls_amount",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "congestion_surcharge",
+            "dataType": "double",
+            "sourceColumn": "congestion_surcharge",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "Airport_fee",
+            "dataType": "double",
+            "sourceColumn": "Airport_fee",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "total_amount",
+            "dataType": "double",
+            "sourceColumn": "total_amount",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "is_airport",
+            "dataType": "int64",
+            "sourceColumn": "is_airport",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "distance_band",
+            "dataType": "string",
+            "sourceColumn": "distance_band"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "fact_trips",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Parquet.Document(File.Contents(DataDir & \"fact_trips.parquet\")),\n    Typed = Table.TransformColumnTypes(Source, {\n        {\"trip_id\", Int64.Type},\n        {\"date_key\", type datetime},\n        {\"hour_of_day\", Int64.Type},\n        {\"pickup_ts\", type datetime},\n        {\"dropoff_ts\", type datetime},\n        {\"pu_zone_id\", Int64.Type},\n        {\"do_zone_id\", Int64.Type},\n        {\"payment_id\", Int64.Type},\n        {\"rate_id\", Int64.Type},\n        {\"distance_mi\", type number},\n        {\"duration_min\", Int64.Type},\n        {\"speed_mph\", type number},\n        {\"pax\", Int64.Type},\n        {\"fare_amount\", type number},\n        {\"tip_amount\", type number},\n        {\"tolls_amount\", type number},\n        {\"congestion_surcharge\", type number},\n        {\"Airport_fee\", type number},\n        {\"total_amount\", type number},\n        {\"is_airport\", Int64.Type},\n        {\"distance_band\", type text}\n    })\nin\n    Typed"
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "行程量",
+            "expression": "COUNTROWS ( 'fact_trips' )",
+            "formatString": "#,0"
+          },
+          {
+            "name": "GMV",
+            "expression": "SUM ( 'fact_trips'[total_amount] )"
+          },
+          {
+            "name": "客单价",
+            "expression": "DIVIDE ( [GMV], [行程量] )"
+          },
+          {
+            "name": "平均里程",
+            "expression": "AVERAGE ( 'fact_trips'[distance_mi] )"
+          },
+          {
+            "name": "平均时长_分钟",
+            "expression": "AVERAGE ( 'fact_trips'[duration_min] )"
+          },
+          {
+            "name": "平均速度_mph",
+            "expression": "AVERAGE ( 'fact_trips'[speed_mph] )"
+          },
+          {
+            "name": "单均小费",
+            "expression": "AVERAGE ( 'fact_trips'[tip_amount] )"
+          },
+          {
+            "name": "机场单占比",
+            "expression": "DIVIDE ( CALCULATE ( [行程量], 'fact_trips'[is_airport] = 1 ), [行程量] )",
+            "formatString": "0.00%"
+          },
+          {
+            "name": "短途占比",
+            "expression": "DIVIDE ( CALCULATE ( [行程量], 'fact_trips'[distance_band] = \"1_short\" ), [行程量] )",
+            "formatString": "0.00%"
+          },
+          {
+            "name": "小费覆盖率",
+            "expression": "DIVIDE ( CALCULATE ( [行程量], 'fact_trips'[tip_amount] > 0 ), [行程量] )",
+            "formatString": "0.00%"
+          },
+          {
+            "name": "信用卡占比",
+            "expression": "DIVIDE ( CALCULATE ( [行程量], 'dim_payment'[payment_name] = \"信用卡\" ), [行程量] )",
+            "formatString": "0.00%"
+          },
+          {
+            "name": "机场单客单价",
+            "expression": "CALCULATE ( [客单价], 'fact_trips'[is_airport] = 1 )"
+          },
+          {
+            "name": "市区单客单价",
+            "expression": "CALCULATE ( [客单价], 'fact_trips'[is_airport] = 0 )"
+          },
+          {
+            "name": "同星期基线",
+            "expression": "CALCULATE ( MEDIANX ( VALUES ( 'dim_date'[date_key] ), [行程量] ), REMOVEFILTERS ( 'dim_date'[date_key] ), VALUES ( 'dim_date'[dow] ) )",
+            "formatString": "#,0"
+          },
+          {
+            "name": "偏离度",
+            "expression": "VAR cur = [行程量]\nVAR base = [同星期基线]\nRETURN DIVIDE ( cur - base, base )",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "缺口单量",
+            "expression": "[行程量] - [同星期基线]",
+            "formatString": "#,0"
+          },
+          {
+            "name": "缺口营收",
+            "expression": "VAR 实际 = [GMV]\nVAR 基准 = CALCULATE ( MEDIANX ( VALUES ( 'dim_date'[date_key] ), [GMV] ), REMOVEFILTERS ( 'dim_date'[date_key] ), VALUES ( 'dim_date'[dow] ) )\nRETURN 实际 - 基准"
+          },
+          {
+            "name": "速度偏离",
+            "expression": "VAR cur = [平均速度_mph]\nVAR base = CALCULATE ( MEDIANX ( VALUES ( 'dim_date'[date_key] ), [平均速度_mph] ), REMOVEFILTERS ( 'dim_date'[date_key] ), VALUES ( 'dim_date'[dow] ) )\nRETURN DIVIDE ( cur - base, base )",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "2-13 行程量",
+            "expression": "CALCULATE ( [行程量], 'dim_date'[date_key] = DATE ( 2024, 2, 13 ) )",
+            "formatString": "#,0"
+          },
+          {
+            "name": "2-13 同星期基线",
+            "expression": "CALCULATE ( MEDIANX ( VALUES ( 'dim_date'[date_key] ), [行程量] ), REMOVEFILTERS ( 'dim_date'[date_key] ), 'dim_date'[dow] = 2 )",
+            "formatString": "#,0"
+          },
+          {
+            "name": "2-13 偏离度",
+            "expression": "VAR cur = [2-13 行程量]\nVAR base = [2-13 同星期基线]\nRETURN DIVIDE ( cur - base, base )",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "2-13 缺口单量",
+            "expression": "[2-13 行程量] - [2-13 同星期基线]",
+            "formatString": "#,0"
+          },
+          {
+            "name": "2-13 整体偏离度",
+            "expression": "VAR cur = CALCULATE ( [2-13 行程量], REMOVEFILTERS ( 'dim_zone' ) )\nVAR base = CALCULATE ( [2-13 同星期基线], REMOVEFILTERS ( 'dim_zone' ) )\nRETURN DIVIDE ( cur - base, base )",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "2-13 超额缺口",
+            "expression": "[2-13 缺口单量] - [2-13 同星期基线] * [2-13 整体偏离度]",
+            "formatString": "#,0"
+          },
+          {
+            "name": "2-13 缺口营收",
+            "expression": "VAR cur = CALCULATE ( [GMV], 'dim_date'[date_key] = DATE ( 2024, 2, 13 ) )\nVAR base = CALCULATE ( MEDIANX ( VALUES ( 'dim_date'[date_key] ), [GMV] ), REMOVEFILTERS ( 'dim_date'[date_key] ), 'dim_date'[dow] = 2 )\nRETURN cur - base"
+          },
+          {
+            "name": "2-13 速度偏离",
+            "expression": "VAR cur = CALCULATE ( [平均速度_mph], 'dim_date'[date_key] = DATE ( 2024, 2, 13 ) )\nVAR base = CALCULATE ( MEDIANX ( VALUES ( 'dim_date'[date_key] ), [平均速度_mph] ), REMOVEFILTERS ( 'dim_date'[date_key] ), 'dim_date'[dow] = 2 )\nRETURN DIVIDE ( cur - base, base )",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "上月行程量",
+            "expression": "CALCULATE ( [行程量], DATEADD ( 'dim_date'[date_key], -1, MONTH ) )",
+            "formatString": "#,0"
+          },
+          {
+            "name": "行程量环比",
+            "expression": "VAR prev = [上月行程量]\nRETURN DIVIDE ( [行程量] - prev, prev )",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "QTD 行程量",
+            "expression": "TOTALQTD ( [行程量], 'dim_date'[date_key] )",
+            "formatString": "#,0"
+          },
+          {
+            "name": "近7日日均",
+            "expression": "AVERAGEX ( DATESINPERIOD ( 'dim_date'[date_key], MAX ( 'dim_date'[date_key] ), -7, DAY ), [行程量] )",
+            "formatString": "#,0"
+          },
+          {
+            "name": "近7日波动率",
+            "expression": "VAR m = [近7日日均]\nVAR s = STDEVX.P ( DATESINPERIOD ( 'dim_date'[date_key], MAX ( 'dim_date'[date_key] ), -7, DAY ), [行程量] )\nRETURN DIVIDE ( s, m )",
+            "formatString": "0.00%"
+          },
+          {
+            "name": "区域占比",
+            "expression": "DIVIDE ( [行程量], CALCULATE ( [行程量], REMOVEFILTERS ( 'dim_zone'[borough] ) ) )",
+            "formatString": "0.0%"
+          },
+          {
+            "name": "区域排名",
+            "expression": "RANKX ( ALL ( 'dim_zone'[borough] ), [行程量], , DESC, DENSE )",
+            "formatString": "#,0"
+          },
+          {
+            "name": "区域跌幅排名",
+            "expression": "RANKX ( ALL ( 'dim_zone'[borough] ), [偏离度], , ASC, DENSE )",
+            "formatString": "#,0"
+          },
+          {
+            "name": "累计贡献",
+            "expression": "VAR cur = [行程量]\nVAR cum = CALCULATE ( [行程量], FILTER ( ALL ( 'dim_zone'[zone_name] ), [行程量] >= cur ) )\nRETURN DIVIDE ( cum, CALCULATE ( [行程量], ALL ( 'dim_zone'[zone_name] ) ) )",
+            "formatString": "0.0%"
+          }
+        ]
+      },
+      {
+        "name": "dim_date",
+        "columns": [
+          {
+            "name": "date_key",
+            "dataType": "dateTime",
+            "sourceColumn": "date_key",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "yr",
+            "dataType": "int64",
+            "sourceColumn": "yr",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "mon",
+            "dataType": "int64",
+            "sourceColumn": "mon",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "dom",
+            "dataType": "int64",
+            "sourceColumn": "dom",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "dow",
+            "dataType": "int64",
+            "sourceColumn": "dow",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "year_month",
+            "dataType": "string",
+            "sourceColumn": "year_month"
+          },
+          {
+            "name": "is_weekend",
+            "dataType": "int64",
+            "sourceColumn": "is_weekend",
+            "summarizeBy": "none"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "dim_date",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Csv.Document(File.Contents(DataDir & \"dim_date.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Headers, {\n        {\"date_key\", type datetime},\n        {\"yr\", Int64.Type},\n        {\"mon\", Int64.Type},\n        {\"dom\", Int64.Type},\n        {\"dow\", Int64.Type},\n        {\"year_month\", type text},\n        {\"is_weekend\", Int64.Type}\n    })\nin\n    Typed"
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "__PBI_TimeIntelligenceEnabled",
+            "value": "1"
+          }
+        ]
+      },
+      {
+        "name": "dim_zone",
+        "columns": [
+          {
+            "name": "zone_id",
+            "dataType": "int64",
+            "sourceColumn": "zone_id",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "borough",
+            "dataType": "string",
+            "sourceColumn": "borough"
+          },
+          {
+            "name": "zone_name",
+            "dataType": "string",
+            "sourceColumn": "zone_name"
+          },
+          {
+            "name": "service_zone",
+            "dataType": "string",
+            "sourceColumn": "service_zone"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "dim_zone",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Csv.Document(File.Contents(DataDir & \"dim_zone.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Headers, {\n        {\"zone_id\", Int64.Type},\n        {\"borough\", type text},\n        {\"zone_name\", type text},\n        {\"service_zone\", type text}\n    })\nin\n    Typed"
+            }
+          }
+        ]
+      },
+      {
+        "name": "dim_payment",
+        "columns": [
+          {
+            "name": "payment_id",
+            "dataType": "int64",
+            "sourceColumn": "payment_id",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "payment_name",
+            "dataType": "string",
+            "sourceColumn": "payment_name"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "dim_payment",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Csv.Document(File.Contents(DataDir & \"dim_payment.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Headers, {\n        {\"payment_id\", Int64.Type},\n        {\"payment_name\", type text}\n    })\nin\n    Typed"
+            }
+          }
+        ]
+      },
+      {
+        "name": "dim_rate",
+        "columns": [
+          {
+            "name": "rate_id",
+            "dataType": "int64",
+            "sourceColumn": "rate_id",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "rate_name",
+            "dataType": "string",
+            "sourceColumn": "rate_name"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "dim_rate",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": "let\n    Source = Csv.Document(File.Contents(DataDir & \"dim_rate.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),\n    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),\n    Typed = Table.TransformColumnTypes(Headers, {\n        {\"rate_id\", Int64.Type},\n        {\"rate_name\", type text}\n    })\nin\n    Typed"
+            }
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "name": "fact_trips_date_key_dim_date_date_key",
+        "fromTable": "fact_trips",
+        "fromColumn": "date_key",
+        "toTable": "dim_date",
+        "toColumn": "date_key"
+      },
+      {
+        "name": "fact_trips_pu_zone_id_dim_zone_zone_id",
+        "fromTable": "fact_trips",
+        "fromColumn": "pu_zone_id",
+        "toTable": "dim_zone",
+        "toColumn": "zone_id"
+      },
+      {
+        "name": "fact_trips_payment_id_dim_payment_payment_id",
+        "fromTable": "fact_trips",
+        "fromColumn": "payment_id",
+        "toTable": "dim_payment",
+        "toColumn": "payment_id"
+      },
+      {
+        "name": "fact_trips_rate_id_dim_rate_rate_id",
+        "fromTable": "fact_trips",
+        "fromColumn": "rate_id",
+        "toTable": "dim_rate",
+        "toColumn": "rate_id"
+      }
+    ],
+    "expressions": [
+      {
+        "name": "DataDir",
+        "kind": "m",
+        "expression": "\"C:/REPLACE_WITH_YOUR_PATH/taxi-ops-analytics/powerbi/exports/\" meta [IsParameterQuery=true, Type=\"Text\", IsParameterQueryRequired=true, Description=\"数据文件目录。换电脑后改成新路径，否则图表全空。\"]"
+      }
+    ]
+  }
+}

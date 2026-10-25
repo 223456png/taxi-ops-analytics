@@ -1,0 +1,6 @@
+# 清洗自检
+
+```
+ raw_rows  clean_rows  dropped_nonpos_amount  dropped_zero_distance  dropped_time_inverted  dropped_out_of_range  dropped_duration  dropped_total  drop_overlap  speed_null  distance_capped
+  9554778     9217207                 117187                 204419                    344                    20             15601         337571             0        1361              244
+```
